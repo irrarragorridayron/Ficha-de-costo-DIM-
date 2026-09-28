@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#6a1b9a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+<title>Ficha de Costo</title>
+
+<style>
+*{
+    box-sizing:border-box;
+    -webkit-tap-highlight-color:transparent;
+}
+
+body{
+    margin:0;
+    font-family:Arial,Helvetica,sans-serif;
+    background:#f4f4f6;
+    color:#222;
+}
+
+header{
+    background:linear-gradient(135deg,#6a1b9a,#8e44ad);
+    color:white;
+    padding:22px 18px;
+    text-align:center;
+    position:sticky;
+    top:0;
+    z-index:20;
+    box-shadow:0 3px 10px rgba(0,0,0,.18);
+}
+
+header h1{
+    margin:0;
+    font-size:25px;
+}
+
+header p{
+    margin:6px 0 0;
+    opacity:.9;
+    font-size:14px;
+}
+
+main{
+    max-width:700px;
+    margin:auto;
+    padding:16px;
+    padding-bottom:90px;
+}
+
+.card{
+    background:white;
+    border-radius:16px;
+    padding:18px;
+    margin-bottom:16px;
+    box-shadow:0 2px 9px rgba(0,0,0,.08);
+}
+
+.card h2{
+    margin:0 0 15px;
+    font-size:19px;
+    color:#6a1b9a;
+}
+
+button{
+    border:0;
+    border-radius:12px;
+    padding:13px 16px;
+    font-size:15px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.primary{
+    width:100%;
+    background:#6a1b9a;
+    color:white;
+}
+
+.secondary{
+    background:#eee;
+    color:#333;
+}
+
+.danger{
+    background:#d32f2f;
+    color:white;
+}
+
+.success{
+    background:#2e7d32;
+    color:white;
+}
+
+input,select{
+    width:100%;
+    padding:13px;
+    border:1px solid #ccc;
+    border-radius:10px;
+    font-size:16px;
+    margin-top:6px;
+    margin-bottom:13px;
+    background:white;
+}
+
+label{
+    font-size:14px;
+    font-weight:bold;
+}
+
+.row{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+}
+
+.row3{
+    display:grid;
+    grid-template-columns:1.5fr 1fr 1fr;
+    gap:8px;
+}
+
+.material-row{
+    background:#f7f7f8;
+    border-radius:12px;
+    padding:12px;
+    margin-bottom:10px;
+    border:1px solid #eee;
+}
+
+.material-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:5px;
+}
+
+.material-name{
+    font-weight:bold;
+}
+
+.cost{
+    font-weight:bold;
+    color:#6a1b9a;
+}
+
+.small-btn{
+    padding:8px 10px;
+    font-size:13px;
+}
+
+.total-box{
+    background:#f3e5f5;
+    border-radius:14px;
+    padding:16px;
+}
+
+.total-line{
+    display:flex;
+    justify-content:space-between;
+    margin:9px 0;
+}
+
+.total-final{
+    font-size:22px;
+    font-weight:bold;
+    color:#6a1b9a;
+    border-top:1px solid #d1aee0;
+    padding-top:12px;
+}
+
+.empty{
+    text-align:center;
+    color:#777;
+    padding:20px 5px;
+}
+
+.list-item{
+    background:#fafafa;
+    border:1px solid #eee;
+    border-radius:13px;
+    padding:14px;
+    margin-bottom:10px;
+}
+
+.list-item strong{
+    display:block;
+    font-size:17px;
+    margin-bottom:5px;
+}
+
+.list-item small{
+    color:#777;
+}
+
+.list-actions{
+    display:flex;
+    gap:8px;
+    margin-top:10px;
+}
+
+.list-actions button{
+    flex:1;
+}
+
+.hidden{
+    display:none!important;
+}
+
+nav{
+    position:fixed;
+    bottom:0;
+    left:0;
+    right:0;
+    background:white;
+    display:flex;
+    justify-content:space-around;
+    padding:8px 5px;
+    box-shadow:0 -3px 12px rgba(0,0,0,.12);
+    z-index:30;
+}
+
+nav button{
+    background:transparent;
+    color:#555;
+    font-size:12px;
+    padding:8px 10px;
+}
+
+nav button.active{
+    color:#6a1b9a;
+}
+
+.badge{
+    display:inline-block;
+    background:#e1bee7;
+    color:#6a1b9a;
+    border-radius:20px;
+    padding:4px 9px;
+    font-size:12px;
+    font-weight:bold;
+}
+
+hr{
+    border:0;
+    border-top:1px solid #eee;
+    margin:16px 0;
+}
+
+@media(max-width:430px){
+    .row3{
+        grid-template-columns:1fr;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>🧾 Ficha de Costo</h1>
+    <p>Control de costos de producción · Offline</p>
+</header>
+
+<main>
+
+<!-- INICIO -->
+<section id="inicio">
+
+    <div class="card">
+        <h2>🏠 Inicio</h2>
+
+        <button class="primary" onclick="nuevaFicha()">
+            ➕ Nueva ficha de costo
+        </button>
+
+        <br><br>
+
+        <button class="secondary" style="width:100%" onclick="mostrarSeccion('materias')">
+            🧱 Materias primas
+        </button>
+
+        <br><br>
+
+        <button class="secondary" style="width:100%" onclick="mostrarSeccion('fichas')">
+            📋 Mis fichas
+        </button>
+    </div>
+
+    <div class="card">
+        <h2>📊 Resumen</h2>
+
+        <div class="total-line">
+            <span>Materias primas</span>
+            <strong id="resumenMaterias">0</strong>
+        </div>
+
+        <div class="total-line">
+            <span>Fichas guardadas</span>
+            <strong id="resumenFichas">0</strong>
+        </div>
+    </div>
+
+</section>
+
+
+<!-- MATERIAS PRIMAS -->
+<section id="materias" class="hidden">
+
+    <div class="card">
+
+        <h2>🧱 Materias primas</h2>
+
+        <label>Nombre</label>
+        <input id="materiaNombre" placeholder="Ej. Harina">
+
+        <div class="row">
+
+            <div>
+                <label>Precio</label>
+                <input id="materiaPrecio" type="number" step="0.01" placeholder="0.00">
+            </div>
+
+            <div>
+                <label>Unidad</label>
+                <select id="materiaUnidad">
+                    <option value="kg">kg</option>
+                    <option value="g">g</option>
+                    <option value="l">L</option>
+                    <option value="ml">ml</option>
+                    <option value="unidad">unidad</option>
+                    <option value="m">m</option>
+                    <option value="otro">Otro</option>
+                </select>
+            </div>
+
+        </div>
+
+        <button class="primary" onclick="guardarMateria()">
+            💾 Guardar materia prima
+        </button>
+
+    </div>
+
+    <div class="card">
+        <h2>📦 Mis materias primas</h2>
+        <div id="listaMaterias"></div>
+    </div>
+
+</section>
+
+
+<!-- NUEVA FICHA -->
+<section id="ficha" class="hidden">
+
+    <div class="card">
+
+        <h2>📋 Datos del producto</h2>
+
+        <label>Nombre del producto</label>
+        <input id="productoNombre" placeholder="Ej. Pastel de chocolate">
+
+        <div class="row">
+
+            <div>
+                <label>Cantidad producida</label>
+                <input id="cantidadProduccion" type="number" step="0.01" value="1">
+            </div>
+
+            <div>
+                <label>Unidad</label>
+                <select id="unidadProduccion">
+                    <option value="unidad">unidades</option>
+                    <option value="kg">kg</option>
+                    <option value="g">g</option>
+                    <option value="l">litros</option>
+                    <option value="ml">ml</option>
+                </select>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="card">
+
+        <h2>🧱 Materias primas utilizadas</h2>
+
+        <div id="materiasFicha"></div>
+
+        <button class="secondary" style="width:100%" onclick="agregarMateriaFicha()">
+            ➕ Agregar materia prima
+        </button>
+
+    </div>
+
+
+    <div class="card">
+
+        <h2>👷 Mano de obra</h2>
+
+        <label>Horas trabajadas</label>
+        <input id="horasTrabajo" type="number" step="0.01" value="0" oninput="calcularFicha()">
+
+        <label>Costo por hora</label>
+        <input id="costoHora" type="number" step="0.01" value="0" oninput="calcularFicha()">
+
+    </div>
+
+
+    <div class="card">
+
+        <h2>⚡ Gastos indirectos</h2>
+
+        <label>Electricidad</label>
+        <input id="electricidad" type="number" step="0.01" value="0" oninput="calcularFicha()">
+
+        <label>Agua</label>
+        <input id="agua" type="number" step="0.01" value="0" oninput="calcularFicha()">
+
+        <label>Gas</label>
+        <input id="gas" type="number" step="0.01" value="0" oninput="calcularFicha()">
+
+        <label>Transporte</label>
+        <input id="transporte" type="number" step="0.01" value="0" oninput="calcularFicha()">
+
+        <label>Otros gastos</label>
+        <input id="otrosGastos" type="number" step="0.01" value="0" oninput="calcularFicha()">
+
+    </div>
+
+
+    <div class="card">
+
+        <h2>💰 Venta</h2>
+
+        <label>Precio de venta por unidad</label>
+        <input id="precioVenta" type="number" step="0.01" value="0" oninput="calcularFicha()">
+
+    </div>
+
+
+    <div class="card">
+
+        <h2>📊 Resultado</h2>
+
+        <div class="total-box">
+
+            <div class="total-line">
+                <span>Materias primas</span>
+                <strong id="totalMaterias">$0.00</strong>
+            </div>
+
+            <div class="total-line">
+                <span>Mano de obra</span>
+                <strong id="totalMano">$0.00</strong>
+            </div>
+
+            <div class="total-line">
+                <span>Gastos indirectos</span>
+                <strong id="totalIndirectos">$0.00</strong>
+            </div>
+
+            <div class="total-line total-final">
+                <span>Costo total</span>
+                <strong id="costoTotal">$0.00</strong>
+            </div>
+
+            <div class="total-line">
+                <span>Costo por unidad</span>
+                <strong id="costoUnidad">$0.00</strong>
+            </div>
+
+            <hr>
+
+            <div class="total-line">
+                <span>Ganancia por unidad</span>
+                <strong id="gananciaUnidad">$0.00</strong>
+            </div>
+
+            <div class="total-line">
+                <span>Ganancia total</span>
+                <strong id="gananciaTotal">$0.00</strong>
+            </div>
+
+            <div class="total-line">
+                <span>Margen</span>
+                <strong id="margen">0%</strong>
+            </div>
+
+        </div>
+
+        <br>
+
+        <button class="success" style="width:100%" onclick="guardarFicha()">
+            💾 Guardar ficha
+        </button>
+
+        <br><br>
+
+        <button class="secondary" style="width:100%" onclick="mostrarSeccion('inicio')">
+            ↩️ Cancelar
+        </button>
+
+    </div>
+
+</section>
+
+
+<!-- FICHAS -->
+<section id="fichas" class="hidden">
+
+    <div class="card">
+
+        <h2>📋 Mis fichas guardadas</h2>
+
+        <div id="listaFichas"></div>
+
+    </div>
+
+</section>
+
+</main>
+
+
+<nav>
+
+    <button id="navInicio" onclick="mostrarSeccion('inicio')">
+        🏠<br>Inicio
+    </button>
+
+    <button id="navMaterias" onclick="mostrarSeccion('materias')">
+        🧱<br>Materias
+    </button>
+
+    <button id="navFicha" onclick="nuevaFicha()">
+        ➕<br>Nueva
+    </button>
+
+    <button id="navFichas" onclick="mostrarSeccion('fichas')">
+        📋<br>Fichas
+    </button>
+
+</nav>
+
+
+<script>
+
+/* =========================
+   DATOS LOCALES
+========================= */
+
+let materias = JSON.parse(localStorage.getItem("fc_materias") || "[]");
+let fichas = JSON.parse(localStorage.getItem("fc_fichas") || "[]");
+
+let materiasFicha = [];
+
+
+/* =========================
+   UTILIDADES
+========================= */
+
+function dinero(valor){
+    return "$" + Number(valor || 0).toFixed(2);
+}
+
+function guardarDatos(){
+    localStorage.setItem("fc_materias", JSON.stringify(materias));
+    localStorage.setItem("fc_fichas", JSON.stringify(fichas));
+}
+
+
+/* =========================
+   NAVEGACIÓN
+========================= */
+
+function mostrarSeccion(id){
+
+    document.querySelectorAll("main > section").forEach(s=>{
+        s.classList.add("hidden");
+    });
+
+    document.getElementById(id).classList.remove("hidden");
+
+    actualizarTodo();
+}
+
+function actualizarTodo(){
+
+    renderMaterias();
+    renderFichas();
+
+    document.getElementById("resumenMaterias").textContent = materias.length;
+    document.getElementById("resumenFichas").textContent = fichas.length;
+}
+
+
+/* =========================
+   MATERIAS PRIMAS
+========================= */
+
+function guardarMateria(){
+
+    const nombre = document.getElementById("materiaNombre").value.trim();
+    const precio = parseFloat(document.getElementById("materiaPrecio").value);
+    const unidad = document.getElementById("materiaUnidad").value;
+
+    if(!nombre){
+        alert("Escribe el nombre de la materia prima.");
+        return;
+    }
+
+    if(isNaN(precio) || precio < 0){
+        alert("Introduce un precio válido.");
+        return;
+    }
+
+    materias.push({
+        id:Date.now(),
+        nombre,
+        precio,
+        unidad
+    });
+
+    guardarDatos();
+
+    document.getElementById("materiaNombre").value="";
+    document.getElementById("materiaPrecio").value="";
+
+    renderMaterias();
+
+    alert("Materia prima guardada.");
+}
+
+
+function renderMaterias(){
+
+    const contenedor = document.getElementById("listaMaterias");
+
+    if(!contenedor) return;
+
+    if(materias.length===0){
+
+        contenedor.innerHTML =
+        '<div class="empty">No hay materias primas registradas.</div>';
+
+        return;
+    }
+
+    contenedor.innerHTML = materias.map(m=>`
+
+        <div class="list-item">
+
+            <strong>${escapeHTML(m.nombre)}</strong>
+
+            <small>
+                ${dinero(m.precio)} / ${escapeHTML(m.unidad)}
+            </small>
+
+            <div class="list-actions">
+
+                <button class="danger small-btn"
+                    onclick="eliminarMateria(${m.id})">
+                    🗑️ Eliminar
+                </button>
+
+            </div>
+
+        </div>
+
+    `).join("");
+}
+
+
+function eliminarMateria(id){
+
+    if(!confirm("¿Eliminar esta materia prima?")) return;
+
+    materias = materias.filter(m=>m.id!==id);
+
+    guardarDatos();
+
+    renderMaterias();
+}
+
+
+/* =========================
+   NUEVA FICHA
+========================= */
+
+function nuevaFicha(){
+
+    materiasFicha = [];
+
+    document.getElementById("productoNombre").value="";
+    document.getElementById("cantidadProduccion").value="1";
+    document.getElementById("unidadProduccion").value="unidad";
+
+    document.getElementById("horasTrabajo").value="0";
+    document.getElementById("costoHora").value="0";
+
+    document.getElementById("electricidad").value="0";
+    document.getElementById("agua").value="0";
+    document.getElementById("gas").value="0";
+    document.getElementById("transporte").value="0";
+    document.getElementById("otrosGastos").value="0";
+
+    document.getElementById("precioVenta").value="0";
+
+    renderMateriasFicha();
+
+    mostrarSeccion("ficha");
+}
+
+
+/* =========================
+   MATERIAS EN LA FICHA
+========================= */
+
+function agregarMateriaFicha(){
+
+    if(materias.length===0){
+
+        alert("Primero debes registrar al menos una materia prima.");
+        mostrarSeccion("materias");
+        return;
+    }
+
+    materiasFicha.push({
+        id:Date.now(),
+        materiaId:materias[0].id,
+        cantidad:0
+    });
+
+    renderMateriasFicha();
+}
+
+
+function renderMateriasFicha(){
+
+    const contenedor =
+        document.getElementById("materiasFicha");
+
+    if(!contenedor) return;
+
+    if(materiasFicha.length===0){
+
+        contenedor.innerHTML =
+        '<div class="empty">Agrega las materias primas utilizadas.</div>';
+
+        calcularFicha();
+
+        return;
+    }
+
+    contenedor.innerHTML = materiasFicha.map(item=>{
+
+        const materia =
+            materias.find(m=>m.id===item.materiaId);
+
+        return `
+
+        <div class="material-row">
+
+            <div class="material-header">
+
+                <span class="material-name">
+                    Materia prima
+                </span>
+
+                <button class="danger small-btn"
+                    onclick="eliminarMateriaFicha(${item.id})">
+                    🗑️
+                </button>
+
+            </div>
+
+            <select onchange="cambiarMateria(${item.id},this.value)">
+
+                ${materias.map(m=>`
+
+                    <option value="${m.id}"
+                        ${m.id===item.materiaId ? "selected":""}>
+                        ${escapeHTML(m.nombre)}
+                    </option>
+
+                `).join("")}
+
+            </select>
+
+            <label>
+                Cantidad utilizada (${materia ? materia.unidad:""})
+            </label>
+
+            <input
+                type="number"
+                step="0.001"
+                value="${item.cantidad}"
+                oninput="cambiarCantidad(${item.id},this.value)"
+            >
+
+            <div>
+                Costo:
+                <span class="cost">
+                    ${dinero(costoMateria(item))}
+                </span>
+            </div>
+
+        </div>
+
+        `;
+
+    }).join("");
+
+    calcularFicha();
+}
+
+
+function cambiarMateria(id,materiaId){
+
+    const item =
+        materiasFicha.find(x=>x.id===id);
+
+    if(item){
+        item.materiaId = Number(materiaId);
+    }
+
+    renderMateriasFicha();
+}
+
+
+function cambiarCantidad(id,valor){
+
+    const item =
+        materiasFicha.find(x=>x.id===id);
+
+    if(item){
+        item.cantidad =
+            parseFloat(valor)||0;
+    }
+
+    calcularFicha();
+    renderCostosMaterias();
+}
+
+
+function renderCostosMaterias(){
+
+    const filas =
+        document.querySelectorAll(".material-row");
+
+    filas.forEach((fila,index)=>{
+
+        if(!materiasFicha[index]) return;
+
+        const costo =
+            costoMateria(materiasFicha[index]);
+
+        const elemento =
+            fila.querySelector(".cost");
+
+        if(elemento){
+            elemento.textContent =
+                dinero(costo);
+        }
+
+    });
+}
+
+
+function eliminarMateriaFicha(id){
+
+    materiasFicha =
+        materiasFicha.filter(x=>x.id!==id);
+
+    renderMateriasFicha();
+}
+
+
+function costoMateria(item){
+
+    const materia =
+        materias.find(m=>m.id===item.materiaId);
+
+    if(!materia) return 0;
+
+    return Number(item.cantidad||0) *
+           Number(materia.precio||0);
+}
+
+
+/* =========================
+   CÁLCULO
+========================= */
+
+function calcularFicha(){
+
+    let totalMaterias = 0;
+
+    materiasFicha.forEach(item=>{
+        totalMaterias += costoMateria(item);
+    });
+
+    const horas =
+        parseFloat(document.getElementById("horasTrabajo").value)||0;
+
+    const costoHora =
+        parseFloat(document.getElementById("costoHora").value)||0;
+
+    const totalMano =
+        horas * costoHora;
+
+
+    const electricidad =
+        parseFloat(document.getElementById("electricidad").value)||0;
+
+    const agua =
+        parseFloat(document.getElementById("agua").value)||0;
+
+    const gas =
+        parseFloat(document.getElementById("gas").value)||0;
+
+    const transporte =
+        parseFloat(document.getElementById("transporte").value)||0;
+
+    const otros =
+        parseFloat(document.getElementById("otrosGastos").value)||0;
+
+    const totalIndirectos =
+        electricidad +
+        agua +
+        gas +
+        transporte +
+        otros;
+
+
+    const costoTotal =
+        totalMaterias +
+        totalMano +
+        totalIndirectos;
+
+
+    const cantidad =
+        parseFloat(document.getElementById("cantidadProduccion").value)||1;
+
+    const costoUnidad =
+        cantidad>0 ? costoTotal/cantidad : 0;
+
+
+    const precioVenta =
+        parseFloat(document.getElementById("precioVenta").value)||0;
+
+    const gananciaUnidad =
+        precioVenta-costoUnidad;
+
+    const gananciaTotal =
+        gananciaUnidad*cantidad;
+
+    const margen =
+        precioVenta>0
+        ? (gananciaUnidad/precioVenta)*100
+        : 0;
+
+
+    document.getElementById("totalMaterias").textContent =
+        dinero(totalMaterias);
+
+    document.getElementById("totalMano").textContent =
+        dinero(totalMano);
+
+    document.getElementById("totalIndirectos").textContent =
+        dinero(totalIndirectos);
+
+    document.getElementById("costoTotal").textContent =
+        dinero(costoTotal);
+
+    document.getElementById("costoUnidad").textContent =
+        dinero(costoUnidad);
+
+    document.getElementById("gananciaUnidad").textContent =
+        dinero(gananciaUnidad);
+
+    document.getElementById("gananciaTotal").textContent =
+        dinero(gananciaTotal);
+
+    document.getElementById("margen").textCont
