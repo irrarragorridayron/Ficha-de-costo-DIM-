@@ -1,0 +1,17 @@
+FICHA DE COSTO DIM — VERSIÓN OFFLINE
+
+Archivos:
+- index.html
+- manifest.webmanifest
+- service-worker.js
+- icons/icon-192.png
+- icons/icon-512.png
+
+INSTALACIÓN EN GITHUB PAGES
+1. Sube todos estos archivos y la carpeta icons respetando exactamente la estructura.
+2. Si ya tienes un repositorio publicado, reemplaza el index.html y agrega/reemplaza manifest.webmanifest y service-worker.js.
+3. Abre la dirección de la app con Chrome mientras tengas conexión y espera unos segundos para que el navegador almacene los archivos.
+4. Después podrás abrirla sin internet. Para instalarla, usa el menú de Chrome > Instalar aplicación o Añadir a pantalla principal.
+
+DATOS
+Las materias primas y fichas se guardan en localStorage del navegador/dispositivo. No necesitan internet, pero permanecen en ese dispositivo y navegador. No borres los datos del sitio ni desinstales/limpies el almacenamiento si no tienes una copia de seguridad.
